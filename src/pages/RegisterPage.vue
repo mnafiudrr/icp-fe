@@ -49,6 +49,8 @@
 </template>
 <script>
 import RegisterValidations from '@/services/RegisterValidation';
+import { REGISTER_ACTION } from '@/store/storeconstants';
+import { mapActions } from 'vuex';
 
 
 export default {
@@ -62,12 +64,27 @@ export default {
         }
     },
     methods: {
-        onRegister() {
+        ...mapActions('auth', {
+            register: REGISTER_ACTION
+        }),
+        async onRegister() {
             let validations = new RegisterValidations(this.name, this.email, this.password, this.password_confirmation);
 
             this.errors = validations.checkValidations();
-            if (this.errors.length) {
+            const keysToCheck = ['email', 'password', 'password_confirmation', 'name'];
+
+            if (keysToCheck.some(key => key in this.errors)) {
                 return false;
+            } else {
+                let [response, error] = await this.register({ name: this.name, email: this.email, password: this.password, password_confirmation: this.password_confirmation })
+
+                if (error) {
+                    for (let key in response.errors) {
+                        this.errors[key] = response.errors[key][0];
+                    }
+                } else {
+                    this.$router.push('/');
+                }
             }
         },
     },

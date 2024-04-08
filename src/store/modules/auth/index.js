@@ -6,7 +6,10 @@ export default {
   namespaced: true,
   state() {
     return {
-      name: 'State Nafiu',
+      token: '',
+      id: '',
+      name: '',
+      email: '',
     }
   },
   actions,

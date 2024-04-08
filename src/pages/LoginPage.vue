@@ -4,9 +4,12 @@
       <div class="card card-box-shadow">
         <div class="card-body text-center">
           <h5 class="card-title">Login</h5>
-          <p class="card-text">Use these awesome forms to login your account.</p>
+          <p class="card-text">Use these awesome forms to login your account. {{ token }}</p>
           <form @submit.prevent="onLogin()"
             class="h-100 d-flex flex-column align-items-center justify-content-center needs-validation @">
+            <div v-if="errors.message" class="alert alert-danger alert-dismissible fade show col-sm-10">
+              {{ errors.message }}
+            </div>
             <div class="col-sm-10 mb-2">
               <input type="text" class="form-control" id="email" autocomplete="off" name="email" placeholder="Email"
                 value="" v-bind:class="(errors.email)?'is-invalid':''" v-model="email">
@@ -32,6 +35,8 @@
 </template>
 <script>
 import LoginValidations from '@/services/LoginValidation';
+import { LOGIN_ACTION } from '@/store/storeconstants';
+import { mapActions, mapState } from 'vuex';
 
 
 export default {
@@ -42,13 +47,33 @@ export default {
       errors: [],
     }
   },
+  computed: {
+    ...mapState('auth', {
+      token: state => state.token
+    }),
+  },
+  mounted() {
+  },
   methods: {
-    onLogin() {
+    ...mapActions('auth', {
+      login: LOGIN_ACTION
+    }),
+    async onLogin() {
       let validations = new LoginValidations(this.email, this.password);
 
       this.errors = validations.checkValidations();
-      if (this.errors.length) {
+      const keysToCheck = ['email', 'password'];
+
+      if (keysToCheck.some(key => key in this.errors)) {
         return false;
+      } else {
+        let [response, error] = await this.login({ email: this.email, password: this.password })
+
+        if (error) {
+          this.errors['message'] = response.message;
+        } else {
+          this.$router.push('/');
+        }
       }
     },
   },
