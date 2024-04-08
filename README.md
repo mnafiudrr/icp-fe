@@ -1,4 +1,4 @@
-# vue-auth
+# icp-fe
 
 ## Project setup
 ```
