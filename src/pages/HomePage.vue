@@ -22,7 +22,7 @@
           <div class="mb-3">
             <button type="button" class="btn btn-primary">To Do</button> {{ todos.length }}
           </div>
-          <draggable :list="todos" group="tickets" :disabled="false" item-key="name" class="list-group"
+          <draggable :list="todos" group="tickets" :disabled="false" item-key="name" class="list-group pb-5"
             ghost-class="ghost" @start="true" @end="false" @change="log">
             <template #item="{ element }">
               <div class="list-group-item">
@@ -40,7 +40,7 @@
           <div class="mb-3">
             <button type="button" class="btn btn-primary">Doing</button> {{ doings.length }}
           </div>
-            <draggable :list="doings" group="tickets" :disabled="false" item-key="name" class="list-group"
+            <draggable :list="doings" group="tickets" :disabled="false" item-key="name" class="list-group pb-5"
               ghost-class="ghost" @start="true" @end="false" @change="log">
               <template #item="{ element }">
                 <div class="list-group-item">
