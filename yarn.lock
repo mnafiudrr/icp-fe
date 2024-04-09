@@ -6019,6 +6019,11 @@ vue-loader@^17.0.0:
     hash-sum "^2.0.0"
     watchpack "^2.4.0"
 
+vue-multiselect@^2.1.9:
+  version "2.1.9"
+  resolved "https://registry.yarnpkg.com/vue-multiselect/-/vue-multiselect-2.1.9.tgz#803628d5ff6c5925320930c965bdaae8934b92b1"
+  integrity sha512-nGEppmzhQQT2iDz4cl+ZCX3BpeNhygK50zWFTIRS+r7K7i61uWXJWSioMuf+V/161EPQjexI8NaEBdUlF3dp+g==
+
 vue-router@^4.0.13:
   version "4.0.13"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.0.13.tgz#47f06e2f8ff6120bfff3c27ade1356cc9de7d870"

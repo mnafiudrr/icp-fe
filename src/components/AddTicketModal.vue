@@ -23,11 +23,12 @@
               </select>
             </div>
             <div class="mb-3">
-              <select class="form-select form-select-sm" aria-label="Small select example" v-model="assigned_to"
+              <!-- <select class="form-select form-select-sm" aria-label="Small select example" v-model="assigned_to"
                 v-bind:class="(errors.assigned_to) ? 'is-invalid' : ''">
                 <option selected>Select User</option>
                 <option v-for="user in users" :key="user.id" :value="user.id">{{ user.name }}</option>
-              </select>
+              </select> -->
+              <Multiselect v-model="assigned_to" :options="users"></Multiselect>
             </div>
             <div class="mb-3">
               <textarea class="form-control" placeholder="description" v-model="description"
@@ -62,6 +63,7 @@
 import axios from 'axios'
 import { mapGetters } from 'vuex';
 import { GET_USER_TOKEN_DATA_GETTER } from "@/store/storeconstants";
+import Multiselect from 'vue-multiselect'
 
 export default {
   name: 'AddTicketModal',
@@ -77,6 +79,9 @@ export default {
       users: [],
       projects: [],
     }
+  },
+  components: {
+    Multiselect
   },
   computed: {
     ...mapGetters('auth', {
