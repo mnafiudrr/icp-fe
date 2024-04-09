@@ -20,7 +20,7 @@
       <div class="row mt-5">
         <div class="col-6">
           <div class="mb-3">
-            <button type="button" class="btn btn-primary">To Do</button>
+            <button type="button" class="btn btn-primary">To Do</button> {{ todos.length }}
           </div>
           <draggable :list="todos" group="tickets" :disabled="false" item-key="name" class="list-group"
             ghost-class="ghost" @start="true" @end="false" @change="log">
@@ -37,26 +37,28 @@
           </draggable>
         </div>
         <div class="col-6">
-          <button type="button" class="btn btn-primary mb-3">Doing</button>
-          <draggable :list="doings" group="tickets" :disabled="false" item-key="name" class="list-group"
-            ghost-class="ghost" @start="true" @end="false" @change="log">
-            <template #item="{ element }">
-              <div class="list-group-item">
-                <TicketCard :title="element.project.name + ' - ' + element.title" :description="element.description"
-                  :data="[
+          <div class="mb-3">
+            <button type="button" class="btn btn-primary">Doing</button> {{ doings.length }}
+          </div>
+            <draggable :list="doings" group="tickets" :disabled="false" item-key="name" class="list-group"
+              ghost-class="ghost" @start="true" @end="false" @change="log">
+              <template #item="{ element }">
+                <div class="list-group-item">
+                  <TicketCard :title="element.project.name + ' - ' + element.title" :description="element.description"
+                    :data="[
                     { label: 'Type', value: element.type },
                     { label: 'Label', value: element.label },
                     { label: 'Assigned To', value: element.assigned_to.map(item => item.name) }
                   ]" />
-              </div>
-            </template>
-          </draggable>
+                </div>
+              </template>
+            </draggable>
+          </div>
         </div>
+        <rawDisplayer class="col-3" :value="todos" title="List 1" />
+        <rawDisplayer class="col-3" :value="doings" title="List 2" />
       </div>
-      <rawDisplayer class="col-3" :value="todos" title="List 1" />
-      <rawDisplayer class="col-3" :value="doings" title="List 2" />
     </div>
-  </div>
 </template>
 
 <script>
@@ -121,6 +123,25 @@ export default {
     },
     log: function (evt) {
       window.console.log(evt);
+      console.log(this.todos);
+      console.log(this.doings);
+
+      let data = this.doings.map(item => item.id)
+      console.log(data);
+      try {
+        axios.post(
+            'http://103.163.161.18:8765/api/ticket-sort', 
+            { 
+              label: 'Doing',
+              tickets: data
+            },
+            { headers: { Authorization: this.token } })
+          .then((res) => {
+            console.log(res.data)
+          })
+      } catch (error) {
+        console.log(error);
+      }
     },
   }
 }
