@@ -123,11 +123,8 @@ export default {
     },
     log: function (evt) {
       window.console.log(evt);
-      console.log(this.todos);
-      console.log(this.doings);
 
       let data = this.doings.map(item => item.id)
-      console.log(data);
       try {
         axios.post(
             'http://103.163.161.18:8765/api/ticket-sort', 
@@ -136,9 +133,6 @@ export default {
               tickets: data
             },
             { headers: { Authorization: this.token } })
-          .then((res) => {
-            console.log(res.data)
-          })
       } catch (error) {
         console.log(error);
       }

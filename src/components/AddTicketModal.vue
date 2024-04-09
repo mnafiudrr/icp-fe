@@ -85,11 +85,9 @@ export default {
   },
   mounted() {
     axios.get('http://103.163.161.18:8765/api/reference-data?type=user', { headers: { Authorization: this.token } }).then((res) => {
-      console.log(res.data.data)
       this.users = res.data.data;
     })
     axios.get('http://103.163.161.18:8765/api/reference-data?type=project', { headers: { Authorization: this.token } }).then((res) => {
-      console.log(res.data.data)
       this.projects = res.data.data;
     })
   },
@@ -109,26 +107,15 @@ export default {
         assigned_to: [this.assigned_to]
       }
       try {
-        let response = await axios.post('http://103.163.161.18:8765/api/ticket', project, { headers: { Authorization: this.token } })
-
-        if (response.data.status == 'success') {
-          console.log(response.data.data)
-        }
-        else {
-          console.log(response.data)
-        }
+        await axios.post('http://103.163.161.18:8765/api/ticket', project, { headers: { Authorization: this.token } })
         this.hideModal()
         this.onSuccess()
-
       } catch (error) {
         if (error.response.data) {
-          console.log(error.response.data);
           for (let key in error.response.data.errors) {
             this.errors[key] = error.response.data.errors[key][0];
-            console.log(error.response.data.errors[key]);
           }
         }
-        console.log(this.errors);
       }
     }
   }
