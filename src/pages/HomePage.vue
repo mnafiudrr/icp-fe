@@ -25,7 +25,7 @@
           <draggable :list="todos" group="tickets" :disabled="false" item-key="name" class="list-group pb-5"
             ghost-class="ghost" @start="true" @end="false" @change="log">
             <template #item="{ element }">
-              <div class="list-group-item">
+              <div>
                 <TicketCard :title="element.project.name + ' - ' + element.title" :description="element.description"
                   :data="[
                 { label: 'Type', value: element.type },
@@ -43,7 +43,7 @@
             <draggable :list="doings" group="tickets" :disabled="false" item-key="name" class="list-group pb-5"
               ghost-class="ghost" @start="true" @end="false" @change="log">
               <template #item="{ element }">
-                <div class="list-group-item">
+                <div>
                   <TicketCard :title="element.project.name + ' - ' + element.title" :description="element.description"
                     :data="[
                     { label: 'Type', value: element.type },
@@ -124,13 +124,20 @@ export default {
     log: function (evt) {
       window.console.log(evt);
 
-      let data = this.doings.map(item => item.id)
+
+      let label = 'Doing';
+      let tickets = this.doings.map(item => item.id)
+
+      if (this.doings.length === 0) {
+        label = 'To Do';
+        tickets = this.todos.map(item => item.id)
+      }
       try {
         axios.post(
             'http://103.163.161.18:8765/api/ticket-sort', 
             { 
-              label: 'Doing',
-              tickets: data
+              label,
+              tickets
             },
             { headers: { Authorization: this.token } })
       } catch (error) {
