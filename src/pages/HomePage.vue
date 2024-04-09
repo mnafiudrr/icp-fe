@@ -20,25 +20,41 @@
       <div class="row mt-5">
         <div class="col-6">
           <div class="mb-3">
-            <button type="button" class="btn btn-primary">To Do</button>{{ todos.length }}
+            <button type="button" class="btn btn-primary">To Do</button>
           </div>
-          <TicketCard v-for="todo in todos" :key="todo.id" :title="todo.project.name + ' - ' + todo.title"
-            :description="todo.description" :data="[
-              {label: 'Type', value: todo.type},
-              {label: 'Label', value: todo.label},
-              {label: 'Assigned To', value: todo.assigned_to.map(item => item.name)}
-            ]" />
+          <draggable :list="todos" group="tickets" :disabled="false" item-key="name" class="list-group"
+            ghost-class="ghost" @start="true" @end="false" @change="log">
+            <template #item="{ element }">
+              <div class="list-group-item">
+                <TicketCard :title="element.project.name + ' - ' + element.title" :description="element.description"
+                  :data="[
+                { label: 'Type', value: element.type },
+                { label: 'Label', value: element.label },
+                { label: 'Assigned To', value: element.assigned_to.map(item => item.name) }
+              ]" />
+              </div>
+            </template>
+          </draggable>
         </div>
         <div class="col-6">
-          <button type="button" class="btn btn-primary mb-3">Doing</button> {{ doings.length }}
-          <TicketCard v-for="doing in doings" :key="doing.id" :title="doing.project.name + ' - ' + doing.title"
-            :description="doing.description" :data="[
-              { label: 'Type', value: doing.type },
-              { label: 'Label', value: doing.label },
-              { label: 'Assigned To', value: doing.assigned_to.map(item => item.name) }
-            ]" />
+          <button type="button" class="btn btn-primary mb-3">Doing</button>
+          <draggable :list="doings" group="tickets" :disabled="false" item-key="name" class="list-group"
+            ghost-class="ghost" @start="true" @end="false" @change="log">
+            <template #item="{ element }">
+              <div class="list-group-item">
+                <TicketCard :title="element.project.name + ' - ' + element.title" :description="element.description"
+                  :data="[
+                    { label: 'Type', value: element.type },
+                    { label: 'Label', value: element.label },
+                    { label: 'Assigned To', value: element.assigned_to.map(item => item.name) }
+                  ]" />
+              </div>
+            </template>
+          </draggable>
         </div>
       </div>
+      <rawDisplayer class="col-3" :value="todos" title="List 1" />
+      <rawDisplayer class="col-3" :value="doings" title="List 2" />
     </div>
   </div>
 </template>
@@ -47,6 +63,7 @@
 
 import AddProjectModal from '@/components/AddProjectModal.vue'
 import AddTicketModal from '@/components/AddTicketModal.vue'
+import draggable from 'vuedraggable'
 import TicketCard from '@/components/TicketCard.vue'
 import axios from 'axios'
 
@@ -71,6 +88,7 @@ export default {
   components: {
     AddProjectModal,
     AddTicketModal,
+    draggable,
     TicketCard,
   },
   mounted() {
@@ -92,14 +110,17 @@ export default {
     loadData() {
       axios.get('http://103.163.161.18:8765/api/ticket-sort', { headers: { Authorization: this.token } }).then((res) => {
         res.data.data.forEach((item) => {
+          var tickets = Object.keys(item.tickets).map((key) => item.tickets[key]);
           if (item.label === 'To Do'){
-            this.todos = item.tickets
+            this.todos = tickets
           } else {
-            this.doings = item.tickets
+            this.doings = tickets
           }
-          console.log(item.tickets[0]);
         })
       })
+    },
+    log: function (evt) {
+      window.console.log(evt);
     },
   }
 }
