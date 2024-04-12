@@ -110,6 +110,10 @@ export default {
       this.ticketModal = false
     },
     loadData() {
+      if (!this.token){
+        this.$router.push('/login');
+        return
+      }
       axios.get('http://103.163.161.18:8765/api/ticket-sort', { headers: { Authorization: this.token } }).then((res) => {
         res.data.data.forEach((item) => {
           var tickets = Object.keys(item.tickets).map((key) => item.tickets[key]);
